@@ -1,7 +1,7 @@
 <template>
     <form>
         <input type="text" id="inputTaskName" name="TaskName" placeholder="Enter a Task">
-        <button title="Add Task" type="submit"></button>
+        <button title="Add Task" @click="$emit('addTask')"></button>
         <input type="text" id="inputTaskDescription" name="TaskDescription" placeholder="Enter a Description">
     </form>
 </template>
