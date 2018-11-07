@@ -4,12 +4,15 @@
     <input type="text" disabled=true class="taskdesc" :value="description">
     <button title="Edit Task" class="editBtn" @click="editTask"></button>
     <button title="Describe Task" class="describeBtn" @click="describeTask"></button>
-    <button title="Delete Task" class="deleteBtn" @click="deleteTask"></button>
+    <button title="Delete Task" class="deleteBtn" @click="$emit(deleteTask)"></button>
     <button title="Task Completed" class="completeBtn" @click="completeTask"></button>
   </div>
 </template>
 
 <script>
+export default {
+
+}
 </script>
 
 <style scoped>

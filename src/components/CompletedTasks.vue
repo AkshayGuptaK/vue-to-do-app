@@ -9,15 +9,15 @@
 </script>
 
 <style scoped>
-p {
-    text-align: center;
-    font-size: 1.5rem;
-}
-
 .divider {
     margin: auto;
     width: 80%;
     padding-top: 10px;
     border-bottom: solid blue 1px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 2rem;
 }
 </style>
