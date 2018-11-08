@@ -1,12 +1,21 @@
 <template>
     <form>
-        <input type="text" id="inputTaskName" name="TaskName" placeholder="Enter a Task">
-        <button title="Add Task" @click="$emit('addTask')"></button>
-        <input type="text" id="inputTaskDescription" name="TaskDescription" placeholder="Enter a Description">
+        <input type="text" id="inputTaskName" name="TaskName" v-model.lazy="name" placeholder="Enter a Task">
+        <button title="Add Task" @click.prevent="$emit('add', name, desc)"></button>
+        <input type="text" id="inputTaskDescription" name="TaskDescription" v-model.lazy="desc" placeholder="Enter a Description">
     </form>
 </template>
 
 <script>
+export default {
+    name: "Input",
+    data () {
+        return {
+            name: '',
+            desc: ''
+        }
+    }
+}
 </script>
 
 <style scoped>
@@ -36,7 +45,7 @@ input {
 }
 
 button {
-    background: url('images/add.png') no-repeat local;
+    background: url('../../images/add.png') no-repeat local;
     background-size: 100% 100%;
     padding: 11px;
     border-radius: 5px;
