@@ -4,7 +4,7 @@
     <input type="text" disabled=true ref="DescInput" class="taskdesc" :value="description">
     <button title="Edit Task" class="editBtn" @click="editTask"></button>
     <button title="Describe Task" class="describeBtn" @click="describeTask"></button>
-    <button title="Delete Task" class="deleteBtn" @click="$emit(del)"></button>
+    <button title="Delete Task" class="deleteBtn" @click="$emit('del', id)"></button>
     <button title="Task Completed" class="completeBtn" @click="$emit(completeTask, true)"></button>
   </div>
 </template>

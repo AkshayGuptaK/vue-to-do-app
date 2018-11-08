@@ -27,11 +27,11 @@ export default {
 		}
 	},
 	methods: {
-		addTask (name, desc) {
-			this.tasks.push({ name: name, description: desc, completed: true, id: 1}) // get id from db
+		addTask (taskname, taskdesc) {
+			this.tasks.push({ name: taskname, description: taskdesc, completed: true, id: 1}) // get id from db
 		},
-		delTask (id) {
-			// delete task with this id
+		delTask (delId) {
+			this.tasks = this.tasks.filter(task => {return task.id !== delId})
 		}
 	}
 }
