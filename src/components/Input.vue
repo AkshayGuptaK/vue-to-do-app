@@ -1,7 +1,7 @@
 <template>
     <form>
         <input type="text" id="inputTaskName" name="TaskName" v-model.lazy="name" placeholder="Enter a Task">
-        <button title="Add Task" @click.prevent="$emit('add', name, desc)"></button>
+        <button title="Add Task" @click.prevent="addTask"></button>
         <input type="text" id="inputTaskDescription" name="TaskDescription" v-model.lazy="desc" placeholder="Enter a Description">
     </form>
 </template>
@@ -13,6 +13,17 @@ export default {
         return {
             name: '',
             desc: ''
+        }
+    },
+    methods: {
+        addTask() {
+            if ( !/\S+/.test(this.name) ) {
+                alert('Please enter a task name')
+                return null
+            }
+            this.$emit('add', this.name, this.desc)
+            this.name = ''
+            this.desc = ''
         }
     }
 }

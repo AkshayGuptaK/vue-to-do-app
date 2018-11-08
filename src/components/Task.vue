@@ -1,11 +1,11 @@
 <template>
   <div class="task" :taskId ="id" :completed="completed">
-    <input type="text" disabled=true ref="NameInput" class="taskname" :value="name">
-    <input type="text" disabled=true ref="DescInput" class="taskdesc" :value="description">
-    <button title="Edit Task" class="editBtn" @click="editTask"></button>
-    <button title="Describe Task" class="describeBtn" @click="describeTask"></button>
+    <input type="text" :disabled="editNameDisabled" class="taskname" :value="name">
+    <input type="text" :disabled="editDescDisabled" class="taskdesc" :value="description">
+    <button title="Edit Task" :class="editBtnState" @click="editTask"></button>
+    <button title="Describe Task" :class="descBtnState" @click="describeTask"></button>
     <button title="Delete Task" class="deleteBtn" @click="$emit('del', id)"></button>
-    <button title="Task Completed" class="completeBtn" @click="$emit(completeTask, true)"></button>
+    <button title="Task Completed" :class="compBtnState" @click="$emit(completeTask, completed)"></button>
   </div>
 </template>
 
@@ -13,7 +13,13 @@
 export default {
     name: "Task",
     data () {
-        return {}
+        return {
+            editNameDisabled: true,
+            editDescDisabled: true,
+            editBtnState: 'editBtn',
+            descBtnState: 'describeBtn',
+            compBtnState: 'completeBtn'
+        }
     },
     props: {
         name: String,
@@ -23,10 +29,20 @@ export default {
     },
     methods: {
         editTask() {
-            return 1 // placeholder
+            if (this.editNameDisabled) {
+                this.editNameDisabled = false
+                this.editBtnState = 'acceptNameEditBtn'
+            } else {
+                return 0 //emit event up to app
+            }
         },
         describeTask() {
-            return 1 // placeholder
+            if (this.editDescDisabled) {
+                this.editDescDisabled = false
+                this.descBtnState = 'acceptDescEditBtn'
+            } else {
+                return 1 // placeholder
+            }
         }
     }
 }
