@@ -1,7 +1,7 @@
 <template>
   <div class="task" :taskId ="id" :completed="completed">
-    <input type="text" :disabled="editNameDisabled" class="taskname" :value="name">
-    <input type="text" :disabled="editDescDisabled" class="taskdesc" :value="description">
+    <input type="text" :disabled="editNameDisabled" class="taskname" v-model.lazy="taskname">
+    <input type="text" :disabled="editDescDisabled" class="taskdesc" v-model.lazy="taskdesc">
     <button title="Edit Task" :class="editBtnState" @click="editTask"></button>
     <button title="Describe Task" :class="descBtnState" @click="describeTask"></button>
     <button title="Delete Task" class="deleteBtn" @click="$emit('del', id)"></button>
@@ -18,7 +18,9 @@ export default {
             editDescDisabled: true,
             editBtnState: 'editBtn',
             descBtnState: 'describeBtn',
-            compBtnState: 'completeBtn'
+            compBtnState: 'completeBtn',
+            taskname: this.name,
+            taskdesc: this.description
         }
     },
     props: {
@@ -32,8 +34,10 @@ export default {
             if (this.editNameDisabled) {
                 this.editNameDisabled = false
                 this.editBtnState = 'acceptNameEditBtn'
+            } else if ( !/\S+/.test(this.taskname) ) {
+                alert('Please enter a task name')
             } else {
-                return 0 //emit event up to app
+            this.$emit('changeName', this.taskname, this.taskdesc)
             }
         },
         describeTask() {
@@ -41,7 +45,7 @@ export default {
                 this.editDescDisabled = false
                 this.descBtnState = 'acceptDescEditBtn'
             } else {
-                return 1 // placeholder
+                this.$emit('changeDesc', this.taskname, this.taskdesc)
             }
         }
     }
