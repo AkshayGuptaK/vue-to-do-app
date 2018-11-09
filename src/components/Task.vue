@@ -45,6 +45,7 @@ export default {
     },
     methods: {
         editTask() {
+            this.editDescDisabled = !this.editDescDisabled
             if (this.editNameDisabled) {
                 this.editNameDisabled = false
             } else if ( !/\S+/.test(this.taskname) ) {
@@ -55,12 +56,8 @@ export default {
             }
         },
         describeTask() {
-            if (this.editDescDisabled) {
-                this.editDescDisabled = false
-            } else {
-                this.editDescDisabled = true
-                this.$emit('changeDesc', this.taskdesc, this.id)
-            }
+            this.editDescDisabled = !this.editDescDisabled && this.$emit('changeDesc', this.taskdesc, this.id)
+            console.log(this.editDescDisabled) // debug
         }
     }
 }
