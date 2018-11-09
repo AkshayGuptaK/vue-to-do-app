@@ -2,8 +2,10 @@
 	<div id="app">
 	    <h1>Carpe Diem</h1>
 		<Input @add="addTask"/>
+        <div class="divider"></div>
+		<p v-if="tasksCurrent.length===0" >Twiddling my thumbs, nothing to do.</p>
 		<Task
-		 v-for="task in tasks"
+		 v-for="task in tasksCurrent"
 		 :key="task.id"
 		 :name="task.name"
 		 :description="task.description"
@@ -12,6 +14,21 @@
 		 @del="delTask"
 		 @changeName="acceptNameEdit"
 		 @changeDesc="acceptDescEdit"
+		 @complete="setCompleted"
+		/>
+        <div class="divider"></div>
+        <h2>Completed</h2>
+		<Task
+		 v-for="task in tasksComplete"
+		 :key="task.id"
+		 :name="task.name"
+		 :description="task.description"
+		 :completed="task.completed"
+		 :id="task.id"
+		 @del="delTask"
+		 @changeName="acceptNameEdit"
+		 @changeDesc="acceptDescEdit"
+		 @complete="setCompleted"
 		/>
 	</div>
 </template>
@@ -27,7 +44,8 @@ export default {
 	data () {
 		return {
 			db: null,
-			tasks: []
+			tasksCurrent: [],
+			tasksComplete: []
 		}
 	},
 	mounted: function () {
@@ -61,7 +79,11 @@ export default {
     		request.onsuccess = function (eve) {
         		let cursor = eve.target.result
         		if(cursor) {
-            		vm.tasks.push({ name: cursor.value.name, description: cursor.value.description, completed: cursor.value.completed, id: cursor.value.id})
+					if (cursor.value.completed) {
+						vm.tasksComplete.push({ name: cursor.value.name, description: cursor.value.description, completed: true, id: cursor.value.id})
+					} else {
+						vm.tasksCurrent.push({ name: cursor.value.name, description: cursor.value.description, completed: false, id: cursor.value.id})
+					}
             		cursor.continue()
         		} else {
 		            console.log('Tasks all displayed')
@@ -94,7 +116,7 @@ export default {
 			}
     		transaction.oncomplete = function() {
         		console.log('Database successfully modified.')
-				vm.tasks.push({ name: taskname, description: taskdesc, completed: false, id: request.result})
+				vm.tasksCurrent.push({ name: taskname, description: taskdesc, completed: false, id: request.result})
 			}
 		},
 		delTask (delId) {
@@ -102,7 +124,8 @@ export default {
 		    let [transaction, objectStore] = vm.openRWTransaction(vm.db)
     		let request = objectStore.delete(delId)
 		    transaction.oncomplete = function() {
-				vm.tasks = vm.tasks.filter(task => {return task.id !== delId})
+				vm.tasksCurrent = vm.tasksCurrent.filter(task => {return task.id !== delId})
+				vm.tasksComplete = vm.tasksComplete.filter(task => {return task.id !== delId})
 		        console.log('Task ' + delId + ' deleted')
     		}
 		},
@@ -133,6 +156,30 @@ export default {
     	        	console.log('Database successfully modified.')
         		}
     		}
+		},
+		setCompleted (completed, taskId) {
+			let vm = this
+    		let [objectStore, request] = vm.getTaskData(vm.db, taskId)
+			completed = !completed
+
+		    request.onsuccess = function (eve) {
+        		let requestUpdate = vm.storeTaskData(eve, objectStore, 'completed', completed)
+		        requestUpdate.onerror = function() {
+        		    alert('Database modification failed.')
+        		}
+        		requestUpdate.onsuccess = function() {
+            		console.log('Database successfully modified.')
+            		if (completed) {
+						let i = vm.tasksCurrent.map(x => x.id).indexOf(taskId)
+						vm.tasksCurrent[i].completed = completed
+						vm.tasksComplete.push(vm.tasksCurrent.splice(i, 1)[0])
+            		} else {
+						let i = vm.tasksComplete.map(x => x.id).indexOf(taskId)
+						vm.tasksComplete[i].completed = completed
+						vm.tasksCurrent.push(vm.tasksComplete.splice(i, 1)[0])
+					}
+        		}
+    		}
 		}		
 	}
 }
@@ -141,5 +188,19 @@ export default {
 h1 {
     text-align: center;
     font-size: 3rem;
+}
+h2 {
+    text-align: center;
+    font-size: 2rem;
+}
+p {
+    text-align: center;
+    font-size: 1.5rem;
+}
+.divider {
+    margin: auto;
+    width: 80%;
+    padding-top: 10px;
+    border-bottom: solid blue 1px;
 }
 </style>

@@ -5,7 +5,7 @@
     <button title="Edit Task" :class="editBtnState" @click="editTask"></button>
     <button title="Describe Task" :class="descBtnState" @click="describeTask"></button>
     <button title="Delete Task" class="deleteBtn" @click="$emit('del', id)"></button>
-    <button title="Task Completed" :class="compBtnState" @click="$emit(completeTask, completed)"></button>
+    <button title="Task Completed" :class="compBtnState" @click="$emit('complete', completed, id)"></button>
   </div>
 </template>
 
@@ -16,7 +16,6 @@ export default {
         return {
             editNameDisabled: true,
             editDescDisabled: true,
-            compBtnState: 'completeBtn',
             taskname: this.name,
             taskdesc: this.description
         }
@@ -31,6 +30,11 @@ export default {
             if (this.editDescDisabled) {
                 return 'describeBtn'
             } return 'acceptDescEditBtn'
+        },
+        compBtnState: function () {
+            if (this.completed) {
+                return 'incompleteBtn'
+            } return 'completeBtn'
         }
     },
     props: {
