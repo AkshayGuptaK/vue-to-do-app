@@ -47,7 +47,6 @@ export default {
         editTask() {
             if (this.editNameDisabled) {
                 this.editNameDisabled = false
-                // this.editBtnState = 'acceptNameEditBtn'
             } else if ( !/\S+/.test(this.taskname) ) {
                 alert('Please enter a task name')
             } else {
@@ -58,7 +57,6 @@ export default {
         describeTask() {
             if (this.editDescDisabled) {
                 this.editDescDisabled = false
-                // this.descBtnState = 'acceptDescEditBtn'
             } else {
                 this.editDescDisabled = true
                 this.$emit('changeDesc', this.taskdesc, this.id)

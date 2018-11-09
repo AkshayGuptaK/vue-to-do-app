@@ -72,7 +72,7 @@ export default {
     	}
 	},
 	methods: {
-		loadTasks () {
+		loadTasks () { // initial fetch from db and store in arrays
 			let vm = this
     		let objectStore = this.db.transaction(['tasks'], 'readonly').objectStore('tasks')
     		let request = objectStore.openCursor()
@@ -105,6 +105,11 @@ export default {
     		data[field] = value
     		let request = objectStore.put(data)
     		return request
+		},
+		toggleTaskCompletion (fromArray, toArray, completed, taskId) {
+						let i = fromArray.map(x => x.id).indexOf(taskId)
+						fromArray[i].completed = completed
+						toArray.push(fromArray.splice(i, 1)[0])
 		},
 		addTask (taskname, taskdesc) {
 			let vm = this
@@ -170,13 +175,9 @@ export default {
         		requestUpdate.onsuccess = function() {
             		console.log('Database successfully modified.')
             		if (completed) {
-						let i = vm.tasksCurrent.map(x => x.id).indexOf(taskId)
-						vm.tasksCurrent[i].completed = completed
-						vm.tasksComplete.push(vm.tasksCurrent.splice(i, 1)[0])
+						vm.toggleTaskCompletion(vm.tasksCurrent, vm.tasksComplete, completed, taskId)
             		} else {
-						let i = vm.tasksComplete.map(x => x.id).indexOf(taskId)
-						vm.tasksComplete[i].completed = completed
-						vm.tasksCurrent.push(vm.tasksComplete.splice(i, 1)[0])
+						vm.toggleTaskCompletion(vm.tasksComplete, vm.tasksCurrent, completed, taskId)
 					}
         		}
     		}
