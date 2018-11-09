@@ -16,11 +16,21 @@ export default {
         return {
             editNameDisabled: true,
             editDescDisabled: true,
-            editBtnState: 'editBtn',
-            descBtnState: 'describeBtn',
             compBtnState: 'completeBtn',
             taskname: this.name,
             taskdesc: this.description
+        }
+    },
+    computed: {
+        editBtnState: function () {
+            if (this.editNameDisabled) {
+                return 'editBtn'
+            } return 'acceptNameEditBtn'
+        },
+        descBtnState: function () {
+            if (this.editDescDisabled) {
+                return 'describeBtn'
+            } return 'acceptDescEditBtn'
         }
     },
     props: {
@@ -33,19 +43,21 @@ export default {
         editTask() {
             if (this.editNameDisabled) {
                 this.editNameDisabled = false
-                this.editBtnState = 'acceptNameEditBtn'
+                // this.editBtnState = 'acceptNameEditBtn'
             } else if ( !/\S+/.test(this.taskname) ) {
                 alert('Please enter a task name')
             } else {
-            this.$emit('changeName', this.taskname, this.taskdesc)
+            this.editNameDisabled = true
+            this.$emit('changeName', this.taskname, this.id)
             }
         },
         describeTask() {
             if (this.editDescDisabled) {
                 this.editDescDisabled = false
-                this.descBtnState = 'acceptDescEditBtn'
+                // this.descBtnState = 'acceptDescEditBtn'
             } else {
-                this.$emit('changeDesc', this.taskname, this.taskdesc)
+                this.editDescDisabled = true
+                this.$emit('changeDesc', this.taskdesc, this.id)
             }
         }
     }

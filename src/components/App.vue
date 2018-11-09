@@ -10,6 +10,8 @@
 		 :completed="task.completed"
 		 :id="task.id"
 		 @del="delTask"
+		 @changeName="acceptNameEdit"
+		 @changeDesc="acceptDescEdit"
 		/>
 	</div>
 </template>
@@ -71,6 +73,17 @@ export default {
     		let objectStore = transaction.objectStore('tasks')
     		return [transaction, objectStore]
 		},
+		getTaskData (db, taskId) { // retrieves data corresponding to task id
+    		let objectStore = this.openRWTransaction(db)[1]
+    		let request = objectStore.get(taskId)
+    		return [objectStore, request]
+		},
+		storeTaskData (eve, objectStore, field, value) { // updates task data with one value alteration
+    		let data = eve.target.result
+    		data[field] = value
+    		let request = objectStore.put(data)
+    		return request
+		},
 		addTask (taskname, taskdesc) {
 			let vm = this
 		    let newTask = { name: taskname, description: taskdesc, completed: false }
@@ -86,13 +99,41 @@ export default {
 		},
 		delTask (delId) {
 			let vm = this
-		    let [transaction, objectStore] = this.openRWTransaction(this.db)
+		    let [transaction, objectStore] = vm.openRWTransaction(vm.db)
     		let request = objectStore.delete(delId)
 		    transaction.oncomplete = function() {
 				vm.tasks = vm.tasks.filter(task => {return task.id !== delId})
 		        console.log('Task ' + delId + ' deleted')
     		}
-		}
+		},
+		acceptNameEdit (name, taskId) {
+			let vm = this
+			let [objectStore, request] = vm.getTaskData(vm.db, taskId)
+
+		    request.onsuccess = function (eve) {
+        		let requestUpdate = vm.storeTaskData(eve, objectStore, 'name', name)
+        		requestUpdate.onerror = function() {
+            		alert('Database modification failed.')
+        		}
+        		requestUpdate.onsuccess = function() {
+            		console.log('Database successfully modified.')
+        		}
+    		}
+		},
+		acceptDescEdit (desc, taskId) { // save changes to a task description edit
+			let vm = this
+		    let [objectStore, request] = vm.getTaskData(vm.db, taskId)
+
+		    request.onsuccess = function (eve) {
+        		let requestUpdate = vm.storeTaskData(eve, objectStore, 'description', desc)
+        		requestUpdate.onerror = function() {
+            		alert('Database modification failed.')
+        		}
+	        	requestUpdate.onsuccess = function() {
+    	        	console.log('Database successfully modified.')
+        		}
+    		}
+		}		
 	}
 }
 </script>
