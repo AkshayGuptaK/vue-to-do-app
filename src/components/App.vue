@@ -186,17 +186,22 @@ export default {
 }
 </script>
 <style>
+@import url('https://www.fontify.me/wf/48f3e12c04a64dde546f078f61fa84bc');
+
 h1 {
     text-align: center;
     font-size: 3rem;
+    font-family: font89786;
 }
 h2 {
     text-align: center;
     font-size: 2rem;
+    font-family: font89786;
 }
 p {
     text-align: center;
     font-size: 1.5rem;
+    font-family: font89786;
 }
 .divider {
     margin: auto;
